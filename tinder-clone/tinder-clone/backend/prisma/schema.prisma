@@ -1,0 +1,75 @@
+﻿generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String?
+  name          String
+  dob           DateTime
+  gender        String
+  bio           String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  verified      Boolean   @default(false)
+  
+  photos        Photo[]
+  swipesSent    Swipe[]   @relation("Swiper")
+  swipesReceived Swipe[]  @relation("Swiped")
+  matchesA      Match[]   @relation("UserA")
+  matchesB      Match[]   @relation("UserB")
+  messages      Message[]
+}
+
+model Photo {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  url         String
+  order       Int
+  isVerified  Boolean  @default(false)
+}
+
+model Swipe {
+  id          String   @id @default(cuid())
+  swiperId    String
+  swipedId    String
+  direction   String
+  createdAt   DateTime @default(now())
+  
+  swiper      User     @relation("Swiper", fields: [swiperId], references: [id])
+  swiped      User     @relation("Swiped", fields: [swipedId], references: [id])
+  
+  @@unique([swiperId, swipedId])
+}
+
+model Match {
+  id          String    @id @default(cuid())
+  userAId     String
+  userBId     String
+  createdAt   DateTime  @default(now())
+  
+  userA       User      @relation("UserA", fields: [userAId], references: [id])
+  userB       User      @relation("UserB", fields: [userBId], references: [id])
+  messages    Message[]
+  
+  @@unique([userAId, userBId])
+}
+
+model Message {
+  id          String    @id @default(cuid())
+  matchId     String
+  senderId    String
+  content     String
+  sentAt      DateTime  @default(now())
+  readAt      DateTime?
+  
+  match       Match     @relation(fields: [matchId], references: [id])
+  sender      User      @relation(fields: [senderId], references: [id])
+}

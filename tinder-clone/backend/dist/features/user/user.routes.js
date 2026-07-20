@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("./auth.middleware");
+const user_controller_1 = require("./user.controller");
+const stories_controller_1 = require("./stories.controller");
+const router = (0, express_1.Router)();
+router.get('/me', auth_middleware_1.requireAuth, user_controller_1.getMe);
+router.patch('/profile', auth_middleware_1.requireAuth, user_controller_1.updateProfile);
+router.post('/avatar', auth_middleware_1.requireAuth, user_controller_1.uploadAvatar);
+router.post('/photo', auth_middleware_1.requireAuth, user_controller_1.addPhoto);
+router.patch('/settings', auth_middleware_1.requireAuth, user_controller_1.updateSettings);
+router.get('/stories/feed', auth_middleware_1.requireAuth, stories_controller_1.getFeedStories);
+router.get('/stories', auth_middleware_1.requireAuth, stories_controller_1.getStories);
+router.post('/stories', auth_middleware_1.requireAuth, stories_controller_1.createStory);
+router.delete('/stories/:id', auth_middleware_1.requireAuth, stories_controller_1.deleteStory);
+router.get('/:id/public', auth_middleware_1.requireAuth, user_controller_1.getPublicProfile);
+exports.default = router;

@@ -1,0 +1,5 @@
+# Backend specific ignores
+serviceAccountKey.json
+.env
+node_modules/
+dist/

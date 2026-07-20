@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../user/auth.middleware");
+const discover_controller_1 = require("./discover.controller");
+const router = (0, express_1.Router)();
+router.get('/', auth_middleware_1.requireAuth, discover_controller_1.getDiscover);
+router.post('/swipe', auth_middleware_1.requireAuth, discover_controller_1.swipe);
+router.post('/rewind', auth_middleware_1.requireAuth, discover_controller_1.rewind);
+exports.default = router;
